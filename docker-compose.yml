@@ -1,0 +1,46 @@
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: channeltool-mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: channeltool_db
+      MYSQL_USER: channeltool
+      MYSQL_PASSWORD: channelpass
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./server/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  server:
+    build: ./server
+    container_name: channeltool-server
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: db
+      DB_USER: channeltool
+      DB_PASSWORD: channelpass
+      DB_NAME: channeltool_db
+      DB_PORT: 3306
+      JWT_SECRET: mysecretkey
+    depends_on:
+      - db
+
+  client:
+    build: ./client
+    container_name: channeltool-client
+    ports:
+      - "3000:3000"
+    environment:
+    - HOST=0.0.0.0
+    depends_on:
+      - server
+
+volumes:
+  db_data:
