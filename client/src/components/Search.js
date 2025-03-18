@@ -5,7 +5,6 @@ export default function Search() {
   const [query, setQuery] = useState('');
   const [byUser, setByUser] = useState('');
   const [results, setResults] = useState([]);
-  const [statsType, setStatsType] = useState('');
   const [statsResult, setStatsResult] = useState(null);
 
   const handleSearchText = async () => {
@@ -16,6 +15,7 @@ export default function Search() {
         params: { query }
       });
       setResults(res.data);
+      setStatsResult(null);
     } catch (err) {
       console.error(err);
       alert('Search error');
@@ -30,21 +30,22 @@ export default function Search() {
         params: { byUser }
       });
       setResults(res.data);
+      setStatsResult(null);
     } catch (err) {
       console.error(err);
       alert('Search error');
     }
   };
 
-  const handleStats = async () => {
+  const handleStats = async (statType) => {
     try {
       const token = localStorage.getItem('token');
       const res = await axios.get('http://localhost:5000/api/search', {
         headers: { Authorization: `Bearer ${token}` },
-        params: { stats: statsType }
+        params: { stats: statType }
       });
       setStatsResult(res.data);
-      setResults([]); // Clear normal results
+      setResults([]);
     } catch (err) {
       console.error(err);
       alert('Stats error');
@@ -52,60 +53,88 @@ export default function Search() {
   };
 
   return (
-    <div>
-      <h2>Search</h2>
+    <div className="container mt-5">
+      <h2 className="mb-4">Search</h2>
 
-      <div>
-        <h3>Search by text content</h3>
-        <input
-          placeholder="String to find..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <button onClick={handleSearchText}>Search</button>
+      {/* Search by Text Content */}
+      <div className="card mb-3">
+        <div className="card-body">
+          <h5 className="card-title">Search by Text Content</h5>
+          <div className="form-inline">
+            <input
+              type="text"
+              className="form-control mr-2"
+              placeholder="Enter string to find..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <button onClick={handleSearchText} className="btn btn-primary">
+              Search
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div>
-        <h3>Search by user</h3>
-        <input
-          placeholder="username"
-          value={byUser}
-          onChange={(e) => setByUser(e.target.value)}
-        />
-        <button onClick={handleSearchByUser}>Search</button>
+      {/* Search by User */}
+      <div className="card mb-3">
+        <div className="card-body">
+          <h5 className="card-title">Search by User</h5>
+          <div className="form-inline">
+            <input
+              type="text"
+              className="form-control mr-2"
+              placeholder="Enter username..."
+              value={byUser}
+              onChange={(e) => setByUser(e.target.value)}
+            />
+            <button onClick={handleSearchByUser} className="btn btn-primary">
+              Search
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div>
-        <h3>Stats</h3>
-        <button onClick={() => {setStatsType('mostLeastPosts'); handleStats();}}>
-          Most/Least Posts
-        </button>
-        <button onClick={() => {setStatsType('highestLowestRank'); handleStats();}}>
-          Highest/Lowest Rank
-        </button>
+      {/* Statistics */}
+      <div className="card mb-3">
+        <div className="card-body">
+          <h5 className="card-title">Stats</h5>
+          <button
+            onClick={() => handleStats('mostLeastPosts')}
+            className="btn btn-secondary mr-2"
+          >
+            Most/Least Posts
+          </button>
+          <button
+            onClick={() => handleStats('highestLowestRank')}
+            className="btn btn-secondary"
+          >
+            Highest/Lowest Rank
+          </button>
+        </div>
       </div>
 
-      <hr />
-      <div>
-        {results.length > 0 && (
-          <>
-            <h3>Search Results</h3>
-            <ul>
-              {results.map((r, i) => (
-                <li key={i}>
-                  {r.type} #{r.id} by {r.displayName || '???'}: {r.content}
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-        {statsResult && (
-          <>
-            <h3>Stats Results</h3>
+      {/* Display Results */}
+      {results.length > 0 && (
+        <div className="card mb-3">
+          <div className="card-header">Search Results</div>
+          <ul className="list-group list-group-flush">
+            {results.map((r, i) => (
+              <li key={i} className="list-group-item">
+                {r.type} #{r.id} by {r.displayName || '???'}: {r.content}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {statsResult && (
+        <div className="card mb-3">
+          <div className="card-header">Stats Results</div>
+          <div className="card-body">
             <pre>{JSON.stringify(statsResult, null, 2)}</pre>
-          </>
-        )}
-      </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

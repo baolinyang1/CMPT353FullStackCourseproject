@@ -22,35 +22,39 @@ export default function Register() {
   };
 
   return (
-    <div>
+    <div className="container mt-5">
       <h2>Register</h2>
       <form onSubmit={handleRegister}>
-        <div>
-          <label>Username</label>{" "}
+        <div className="form-group">
+          <label>Username</label>
           <input 
+            className="form-control"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
         </div>
-        <div>
-          <label>Display Name</label>{" "}
+        <div className="form-group">
+          <label>Display Name</label>
           <input
+            className="form-control"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
           />
         </div>
-        <div>
-          <label>Password</label>{" "}
+        <div className="form-group">
+          <label>Password</label>
           <input
             type="password"
+            className="form-control"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required 
           />
         </div>
-        <button type="submit">Register</button>
+        <button type="submit" className="btn btn-success">Register</button>
       </form>
     </div>
   );
 }
+

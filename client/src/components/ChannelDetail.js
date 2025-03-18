@@ -40,11 +40,11 @@ export default function ChannelDetail() {
   }, [channelId]);
 
   return (
-    <div>
+    <div className="container mt-5">
       <h2>Channel Detail</h2>
-      <ul>
+      <ul className="list-group mb-4">
         {messages.map((m) => (
-          <li key={m.id}>
+          <li key={m.id} className="list-group-item">
             <Link to={`/message/${m.id}`}>
               <strong>{m.displayName}:</strong> {m.content}
             </Link>
@@ -52,19 +52,24 @@ export default function ChannelDetail() {
         ))}
       </ul>
 
-      <hr />
-      <h3>Post a new message</h3>
-      <form onSubmit={handlePostMessage}>
-        <div>
-          <label>Content</label>{" "}
-          <textarea
-            value={newMsg}
-            onChange={(e) => setNewMsg(e.target.value)}
-            required
-          />
+      <div className="card">
+        <div className="card-header">Post a New Message</div>
+        <div className="card-body">
+          <form onSubmit={handlePostMessage}>
+            <div className="form-group">
+              <label>Content</label>
+              <textarea
+                className="form-control"
+                value={newMsg}
+                onChange={(e) => setNewMsg(e.target.value)}
+                required
+              />
+            </div>
+            <button type="submit" className="btn btn-primary mt-2">Post Message</button>
+          </form>
         </div>
-        <button type="submit">Post</button>
-      </form>
+      </div>
     </div>
   );
 }
+

@@ -12,7 +12,6 @@ export default function Login() {
         username,
         password
       });
-      // Save token to localStorage or context
       localStorage.setItem('token', res.data.token);
       alert('Login successful!');
     } catch (err) {
@@ -22,27 +21,29 @@ export default function Login() {
   };
 
   return (
-    <div>
+    <div className="container mt-5">
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
-        <div>
-          <label>Username</label>{" "}
+        <div className="form-group">
+          <label>Username</label>
           <input
+            className="form-control"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required 
           />
         </div>
-        <div>
-          <label>Password</label>{" "}
+        <div className="form-group">
+          <label>Password</label>
           <input
             type="password"
+            className="form-control"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required 
           />
         </div>
-        <button type="submit">Login</button>
+        <button type="submit" className="btn btn-primary">Login</button>
       </form>
     </div>
   );

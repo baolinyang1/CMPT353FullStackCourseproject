@@ -11,9 +11,7 @@ export default function ChannelsList() {
     try {
       const token = localStorage.getItem('token');
       const res = await axios.get('http://localhost:5000/api/channels', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` }
       });
       setChannels(res.data);
     } catch (err) {
@@ -33,9 +31,7 @@ export default function ChannelsList() {
       await axios.post('http://localhost:5000/api/channels', 
         { name, description },
         {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+          headers: { Authorization: `Bearer ${token}` }
         }
       );
       setName('');
@@ -48,36 +44,41 @@ export default function ChannelsList() {
   };
 
   return (
-    <div>
+    <div className="container mt-5">
       <h2>Channels</h2>
-      <ul>
+      <ul className="list-group mb-4">
         {channels.map((channel) => (
-          <li key={channel.id}>
+          <li key={channel.id} className="list-group-item">
             <Link to={`/channel/${channel.id}`}>{channel.name}</Link>
           </li>
         ))}
       </ul>
 
-      <hr />
-      <h3>Create a new channel</h3>
-      <form onSubmit={handleCreateChannel}>
-        <div>
-          <label>Name</label>{" "}
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
+      <div className="card">
+        <div className="card-header">Create a New Channel</div>
+        <div className="card-body">
+          <form onSubmit={handleCreateChannel}>
+            <div className="form-group">
+              <label>Name</label>
+              <input
+                className="form-control"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Description</label>
+              <input
+                className="form-control"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
+            <button type="submit" className="btn btn-primary mt-2">Create Channel</button>
+          </form>
         </div>
-        <div>
-          <label>Description</label>{" "}
-          <input
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-        <button type="submit">Create Channel</button>
-      </form>
+      </div>
     </div>
   );
 }
