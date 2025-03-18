@@ -30,13 +30,14 @@ router.get('/', authRequired, async (req, res) => {
     
     if (byUser) {
       // All messages and replies by a specific user
+      // Updated query to include u.displayName
       const [userContent] = await pool.query(
-        `SELECT 'message' as type, m.id, m.content, m.createdAt
+        `SELECT 'message' as type, m.id, m.content, u.displayName, m.createdAt
            FROM messages m
            JOIN users u ON m.userId = u.id
           WHERE u.username = ?
          UNION
-         SELECT 'reply' as type, r.id, r.content, r.createdAt
+         SELECT 'reply' as type, r.id, r.content, u.displayName, r.createdAt
            FROM replies r
            JOIN users u ON r.userId = u.id
           WHERE u.username = ?`,
@@ -90,7 +91,7 @@ router.get('/', authRequired, async (req, res) => {
         `, [row.id]);
         row.totalRating += (replyRatings[0].totalReplyRating || 0);
       }
-      rows.sort((a,b) => b.totalRating - a.totalRating);
+      rows.sort((a, b) => b.totalRating - a.totalRating);
       const highest = rows[0];
       const lowest = rows[rows.length - 1];
       return res.json({ highest, lowest });
